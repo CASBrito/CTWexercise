@@ -27,7 +27,7 @@ public class Car {
     private static DataBaseConnection dbConnection = new DataBaseConnection();
     
     //Construtor
-    public Car(String brand, String model, int seats, String licencePlate, String engineTypeValue, int currentAutonomy, BufferedImage image){
+    public Car(String brand, String model, int seats, String licencePlate, String engineTypeValue, int currentAutonomy){
         
         dbConnection.ligarBd();
         
@@ -42,6 +42,9 @@ public class Car {
         this.image = image;
         
     }
+        
+    //Empty Constructor
+    public Car(){}
     
     public void addCar(){
         
@@ -51,8 +54,8 @@ public class Car {
         
         try {
             Statement statement = connection.createStatement();
-            String query = "INSERT INTO car (Brand, Model, Seats, LicencePlate, EngineType, CurrentAutonomy) "
-                                                        + "VALUES (" + this.brand + ", " + this.model + ", " + this.seats + ", " + this.licencePlate + ", " + this.engineType + ", " + this.currentAutonomy + ")";
+            String query = "INSERT INTO car(Brand, Model, Seats, LicensePlate, EngineType, CurrentAutonomy) "
+                                                        + "VALUES ('" + this.brand + "', '" + this.model + "', '" + this.seats + "', '" + this.licencePlate + "', '" + this.engineType + "', '" + this.currentAutonomy + "')";
             statement.executeUpdate(query);
             
             System.out.println("Car added successfuly.");
@@ -63,7 +66,7 @@ public class Car {
 	}
     }
     
-    public ResultSet getCar(){
+    public void getCar(){
         
         dbConnection.ligarBd();
         
@@ -73,17 +76,17 @@ public class Car {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from car");
             
-            return resultSet;
+            while (resultSet.next()){
+                System.out.println("Car Model: " + resultSet.getString(3));
+            }
 		
 	} catch (SQLException e) {
             System.out.println(e);
 	}
         
-        return null;
-        
     }
     
-    public ResultSet getCarDetail(String model){
+    public void getCarDetail(String model){
         
         dbConnection.ligarBd();
         
@@ -93,13 +96,17 @@ public class Car {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from car where model='" + model + "'");
             
-            return resultSet;
+            resultSet.next();
+            System.out.println("Car Brand: " + resultSet.getString(2));
+            System.out.println("Car Model: " + resultSet.getString(3));
+            System.out.println("Car Seats: " + resultSet.getInt(4));
+            System.out.println("Car License Plate: " + resultSet.getString(5));
+            System.out.println("Car EngineType: " + resultSet.getString(6));
+            System.out.println("Car Current Autonomy: " + resultSet.getInt(7));            
 		
 	} catch (SQLException e) {
             System.out.println(e);
 	}
-        
-        return null;
         
     }
     
