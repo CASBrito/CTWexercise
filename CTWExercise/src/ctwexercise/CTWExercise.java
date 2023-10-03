@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -19,6 +20,7 @@ public class CTWExercise {
     static Reservation res = new Reservation();
     static Scanner myObj = new Scanner(System.in);
     static Car carDefault = new Car();
+    static String carEngType = "";
     
     
     /**
@@ -58,10 +60,19 @@ public class CTWExercise {
                     System.out.print("Insert car Seats: ");
                     String carSeatsS = myObj.nextLine();
                     int carSeats = Integer.parseInt(carSeatsS);
-                    System.out.print("Insert car Licence pPlate: ");
+                    System.out.print("Insert car Licence Plate: ");
                     String carLicPlate = myObj.nextLine();
-                    System.out.print("Insert car Engine Type (COMBUSTION, ELECTRIC, HYBRID): ");
-                    String carEngType = myObj.nextLine();
+                    
+                    do{
+                        System.out.print("Insert car Engine Type (COMBUSTION, ELECTRIC, HYBRID): ");
+                        carEngType = myObj.nextLine();
+                        
+                        if(!carEngType.equals("COMBUSTION") && !carEngType.equals("ELECTRIC") && !carEngType.equals("HYBRID")){
+                            System.out.println("Engine Type must be COMBUSTION, ELECTRIC or HYBRID.");
+                        }
+                        
+                    }while(!carEngType.equals("COMBUSTION") && !carEngType.equals("ELECTRIC") && !carEngType.equals("HYBRID"));
+                    
                     System.out.print("Insert car Current Autonomy: ");
                     String carCurAutonomyS = myObj.nextLine();
                     int carCurAutonomy = Integer.parseInt(carCurAutonomyS);
@@ -90,18 +101,34 @@ public class CTWExercise {
                 }
                 case "5":{                    
                     try{
-                        System.out.print("Insert Pickup Date: ");
-                        String pickupDateS = myObj.nextLine();
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                        Date parseDatePUD = dateFormat.parse(pickupDateS);
-                        Timestamp pickupDate = new java.sql.Timestamp(parseDatePUD.getTime());
+                        long dayDiff = 6;
                         
-                        System.out.print("Insert Drop Off Date: ");
-                        String dropOffDateS = myObj.nextLine();
-                        Date parseDateDOD = dateFormat.parse(dropOffDateS);
-                        Timestamp dropOffDate = new java.sql.Timestamp(parseDateDOD.getTime());
+                        while(dayDiff >4){
+                            System.out.print("Insert Pickup Date: ");
+                            String pickupDateS = myObj.nextLine();
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                            Date parseDatePUD = dateFormat.parse(pickupDateS);
+                            //Timestamp pickupDate = new java.sql.Timestamp(parseDatePUD.getTime());
                         
-                        res.newReservation(pickupDate, dropOffDate);
+                            System.out.print("Insert Drop Off Date: ");
+                            String dropOffDateS = myObj.nextLine();
+                            Date parseDateDOD = dateFormat.parse(dropOffDateS);
+                        
+                            long timeDiff = parseDateDOD.getTime() - parseDatePUD.getTime();
+                        
+                            //long hoursDiff = TimeUnit.MILLISECONDS.toHours(timeDiff) % 60;
+                            dayDiff = TimeUnit.MILLISECONDS.toDays(timeDiff) % 365;
+                        
+                            if(dayDiff <= 4){
+                                Timestamp pickupDate = new java.sql.Timestamp(parseDatePUD.getTime());
+                                Timestamp dropOffDate = new java.sql.Timestamp(parseDateDOD.getTime());
+                                res.newReservation(pickupDate, dropOffDate);                            
+                            }else{
+                                System.out.println("Can't reserve car for more than 4 days.");
+                            }
+                        }
+                        //Timestamp dropOffDate = new java.sql.Timestamp(parseDateDOD.getTime());   
+                        
                         
                     }catch(Exception e){
                         System.out.println(e);
