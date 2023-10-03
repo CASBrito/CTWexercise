@@ -95,6 +95,26 @@ public class Car {
         
     }
     
+    public ResultSet getCarDetail(String model){
+        
+        dbConnection.ligarBd();
+        
+        Connection connection = dbConnection.getConnection();
+        
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("select * from car where model='" + model + "'");
+            
+            return resultSet;
+		
+	} catch (SQLException e) {
+            System.out.println(e);
+	}
+        
+        return null;
+        
+    }
+    
     public void deleteCar(String carModel){
         
         dbConnection.ligarBd();
