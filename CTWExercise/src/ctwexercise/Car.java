@@ -74,4 +74,44 @@ public class Car {
             System.out.println("Car not added successfuly.");
 	}
     }
+    
+    public ResultSet getCar(){
+        
+        dbConnection.ligarBd();
+        
+        Connection connection = dbConnection.getConnection();
+        
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("select * from car");
+            
+            return resultSet;
+		
+	} catch (SQLException e) {
+            System.out.println(e);
+	}
+        
+        return null;
+        
+    }
+    
+    public void deleteCar(String carModel){
+        
+        dbConnection.ligarBd();
+        
+        Connection connection = dbConnection.getConnection();
+        
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("delete from car where model='" + carModel + "'");
+            
+            System.out.println("Car deleted successfuly.");
+		
+	} catch (SQLException e) {
+            System.out.println(e);
+            
+            System.out.println("Car not deleted.");
+	}
+        
+    }
 }
