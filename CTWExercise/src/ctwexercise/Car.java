@@ -31,20 +31,7 @@ public class Car {
         
         dbConnection.ligarBd();
         
-        Connection connection = dbConnection.getConnection();
-        
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select MAX(id) from car");
-		
-            if(resultSet != null){
-                this.id = resultSet.getInt(1) + 1;
-            }else{
-                this.id = 1;
-            }
-	} catch (SQLException e) {
-            System.out.println(e);
-	}
+        Connection connection = dbConnection.getConnection();        
                
         this.brand = brand;
         this.model = model;
@@ -64,8 +51,9 @@ public class Car {
         
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("INSERT INTO car (idCar, Brand, Model, Seats, LicencePlate, EngineType, CurrentAutonomy) "
-                                                        + "VALUES (" + this.id + ", " + this.brand + ", " + this.model + ", " + this.seats + ", " + this.licencePlate + ", " + this.engineType + ", " + this.currentAutonomy + ")");
+            String query = "INSERT INTO car (Brand, Model, Seats, LicencePlate, EngineType, CurrentAutonomy) "
+                                                        + "VALUES (" + this.brand + ", " + this.model + ", " + this.seats + ", " + this.licencePlate + ", " + this.engineType + ", " + this.currentAutonomy + ")";
+            statement.executeUpdate(query);
             
             System.out.println("Car added successfuly.");
 		
@@ -123,7 +111,9 @@ public class Car {
         
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("delete from car where model='" + carModel + "'");
+            String query = "delete from car where model='" + carModel + "'";
+            
+            statement.executeUpdate(query);
             
             System.out.println("Car deleted successfuly.");
 		
