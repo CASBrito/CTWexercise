@@ -8,8 +8,9 @@ package ctwexercise;
 import java.sql.*;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -38,7 +39,6 @@ public class Reservation {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from car");
             
-            if(resultSet.next()){
                 while(resultSet.next()){
                     System.out.println("Car Model: " + resultSet.getString(3));                   
                 }
@@ -47,6 +47,7 @@ public class Reservation {
                 String model = myObj.nextLine();
                 
                 ResultSet resultSetID = statement.executeQuery("select idCar from car where model='" + model + "'");
+                resultSetID.next();
                 int idCar = resultSetID.getInt(1);
                 
                 System.out.println("Insert driver info");
@@ -61,19 +62,40 @@ public class Reservation {
                 driver.addDriver();
                 
                 ResultSet resultSetDriver = statement.executeQuery("select idDriver from driver where name='" + name + "'");
-                int id = resultSetDriver.getInt(1);
+                resultSetDriver.next();
+                int idDriver = resultSetDriver.getInt(1);
                 
-                String query = "INSERT INTO reservation (car_idCar, Driver_idDriver, pickupDate, dropOffDate) VALUES (" + idCar + ", )";
+                String query = "INSERT INTO reservation (car_idCar, Driver_idDriver, pickupDate, dropOffDate) VALUES ('" + idCar + "', '" + idDriver + "', '" + this.pickupDate + "', '" + this.dropOffDate + "')";
                 
-                resultSet = statement.executeQuery("INSERT INTO reservation (car_idCar, Driver_idDriver, pickupDate, dropOffDate) "
-                                                        + "VALUES (" + idCar + ", )");
-            }else{
-                System.out.println("No cars on the list.");
-            }
+                statement.executeUpdate(query);
+                
+                System.out.println("Reservation created successfuly");
 		
 	} catch (SQLException e) {
             System.out.println(e);
 	}
         
+    }
+    
+    public void checkReservation(){
+        
+        dbConnection.ligarBd();
+            
+        Connection connection = dbConnection.getConnection();
+            
+        try{
+            
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("select idReservation, pickupDate, DropOffDate from reservation");
+            
+        while(resultSet.next()){
+            System.out.println("Reservation ID: " + resultSet.getInt(1) + ", Pickup Date: " + resultSet.getTimestamp(2) + ", Drop Off Date: " + resultSet.getTimestamp(3));
+        }
+            
+        } catch (SQLException ex) {
+            
+            Logger.getLogger(Reservation.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
     }
 }

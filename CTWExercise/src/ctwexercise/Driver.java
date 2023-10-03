@@ -34,8 +34,10 @@ public class Driver {
         
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("INSERT INTO driver (Name, Contact, LicenceNumber) "
-                                                        + "VALUES (" + this.name + ", " + this.contact + ", " + this.licenceNumber + ")");
+            String query = "INSERT INTO driver (Name, Contact, LicenseNumber) "
+                                                        + "VALUES ('" + this.name + "', '" + this.contact + "', '" + this.licenceNumber + "')";
+            
+            statement.executeUpdate(query);
             
             System.out.println("Driver added successfuly.");
 		
