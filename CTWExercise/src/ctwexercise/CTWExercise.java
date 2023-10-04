@@ -106,26 +106,34 @@ public class CTWExercise {
                         while(dayDiff >4){
                             System.out.print("Insert Pickup Date: ");
                             String pickupDateS = myObj.nextLine();
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                            Date parseDatePUD = dateFormat.parse(pickupDateS);
-                            //Timestamp pickupDate = new java.sql.Timestamp(parseDatePUD.getTime());
+                            
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                                Date parseDatePUD = dateFormat.parse(pickupDateS);
+                                //Timestamp pickupDate = new java.sql.Timestamp(parseDatePUD.getTime());
+                                
+                                System.out.print("Insert Drop Off Date: ");
+                                String dropOffDateS = myObj.nextLine();
+                                
+                                Date parseDateDOD = dateFormat.parse(dropOffDateS);
                         
-                            System.out.print("Insert Drop Off Date: ");
-                            String dropOffDateS = myObj.nextLine();
-                            Date parseDateDOD = dateFormat.parse(dropOffDateS);
+                                long timeDiff = parseDateDOD.getTime() - parseDatePUD.getTime();
+                                
+                                if(timeDiff > 0){
                         
-                            long timeDiff = parseDateDOD.getTime() - parseDatePUD.getTime();
+                                    //long hoursDiff = TimeUnit.MILLISECONDS.toHours(timeDiff) % 60;
+                                    dayDiff = TimeUnit.MILLISECONDS.toDays(timeDiff) % 365;
                         
-                            //long hoursDiff = TimeUnit.MILLISECONDS.toHours(timeDiff) % 60;
-                            dayDiff = TimeUnit.MILLISECONDS.toDays(timeDiff) % 365;
-                        
-                            if(dayDiff <= 4){
-                                Timestamp pickupDate = new java.sql.Timestamp(parseDatePUD.getTime());
-                                Timestamp dropOffDate = new java.sql.Timestamp(parseDateDOD.getTime());
-                                res.newReservation(pickupDate, dropOffDate);                            
-                            }else{
-                                System.out.println("Can't reserve car for more than 4 days.");
-                            }
+                                    if(dayDiff <= 4){
+                                        Timestamp pickupDate = new java.sql.Timestamp(parseDatePUD.getTime());
+                                        Timestamp dropOffDate = new java.sql.Timestamp(parseDateDOD.getTime());
+                                        res.newReservation(pickupDate, dropOffDate);                            
+                                    }else{
+                                        System.out.println("Can't reserve car for more than 4 days.");
+                                    }
+                                }else{
+                                    System.out.println("Drop off date must be after the pick up date.");
+                                }
+                           
                         }
                         //Timestamp dropOffDate = new java.sql.Timestamp(parseDateDOD.getTime());   
                         
@@ -153,6 +161,7 @@ public class CTWExercise {
             
             menu();
         }
+    
         
     }
     
